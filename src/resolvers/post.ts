@@ -30,7 +30,7 @@ export class PostResolver {
   }
 
   // Faz o update de um post
-  @Mutation(() => Post)
+  @Mutation(() => Post, { nullable: true })
   async updatePost(
     @Arg("id") id: number,
     @Arg("title", () => String, { nullable: true }) title: string,

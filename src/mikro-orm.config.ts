@@ -1,14 +1,16 @@
 import { __prod__ } from "./constants";
-import { Post } from "./entities/Post";
+
 import { MikroORM } from "@mikro-orm/core";
 import path from "path";
 
+import { User } from "./entities/User";
+import { Post } from "./entities/Post";
 export default {
   migrations: {
     path: path.join(__dirname, "./migrations"),
     glob: "!(*.d).{js,ts}",
   },
-  entities: [Post],
+  entities: [Post, User],
   dbName: "lireddit",
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
