@@ -40,6 +40,16 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req, em }: MyContext): Promise<User | null> {
+    console.log(`Session:`, req.session);
+    if (!req.session!.userId) {
+      return null;
+    }
+    const user = await em.findOne(User, { id: req.session!.userId });
+
+    return user;
+  }
   // Ler todos os usuários
   @Query(() => [User])
   users(@Ctx() { em }: MyContext): Promise<User[]> {
@@ -109,7 +119,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async login(
     @Arg("options") options: UsernamePasswordInput,
-    @Ctx() { em }: MyContext
+    @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
     const user = await em.findOne(User, { username: options.username });
 
@@ -135,6 +145,9 @@ export class UserResolver {
         ],
       };
     }
+
+    req.session!.userId = user.id;
+    req.session!.randomKey = "socorro";
 
     return { user };
   }
